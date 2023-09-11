@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class CampController extends AbstractController
 {
     #[Route('api/camp/add', name: 'app_camp_add')]
-    public function addCamp(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager)
+    public function addCampJSON(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager)
     {
         $jsonContent = $request->getContent();
             try {
@@ -24,7 +24,6 @@ class CampController extends AbstractController
                 {
                     $normalizedData = $serializer->normalize($entities);
                     $responseData = ['message' => 'Data imported successfully', 'data' => $normalizedData];
-
                 }
                 else
                     $responseData = ['message' => 'Data is empty'];
@@ -34,14 +33,45 @@ class CampController extends AbstractController
             }
         $entityManager->persist($entities);
         $entityManager->flush();
-        return new JsonResponse($responseData);
+        return new JsonResponse($responseData, 200, [], true);
+    }
+
+    #[Route('api/camp/', name: 'app_camp_getAll')]
+    public function  getAllCampsJSON(EntityManagerInterface $entityManager, SerializerInterface $serializer)
+    {
+        $repository = $entityManager->getRepository(Camp::class);
+        $entities = $repository->findAll();
+        $jsonContent = $serializer->serialize($entities, 'json');
+
+        return new JsonResponse($jsonContent, 200, [], true);
+    }
+    #[Route('api/camp/{id}', name: 'app_camp_getById')]
+    public function  getCampByIdJSON(EntityManagerInterface $entityManager, SerializerInterface $serializer,$id)
+    {
+        $repository = $entityManager->getRepository(Camp::class);
+        $entity = $repository->find($id);
+        if (!$entity) {
+            return new JsonResponse(['message' => 'Entity not found'], 404);
+        }
+        $jsonContent = $serializer->serialize($entity, 'json');
+
+        return new JsonResponse($jsonContent, 200, [], true);
+    }
+    #[Route('api/camp/delete/{id}', name: 'app_camp_deleteCampByI', methods: ['DELETE'])]
+    public function  deleteCampByIdJSON(EntityManagerInterface $entityManager, SerializerInterface $serializer,$id)
+    {
+        $repository = $entityManager->getRepository(Camp::class);
+        $entity = $repository->find($id);
+        if (!$entity) {
+            return new JsonResponse(['message' => 'Entity not found'], 404);
+        }
+        $entityManager->remove($entity);
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Entity deleted successfully'], 200);
     }
 
 
-    /*public function index(): Response
-    {
-        return $this->render('camp/index.html.twig', [
-            'controller_name' => 'CampController',
-        ]);
-    }*/
+
+
 }

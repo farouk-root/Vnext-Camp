@@ -4,5 +4,17 @@ controllers:
 
 app_camp_add:
     path: api/camp/add
-    controller: App\Controller\CampController::addCamp
+    controller: App\Controller\CampController::addCampJSON
     methods: ['POST']
+app_camp_getAll:
+    path: api/camp/
+    controller: App\Controller\CampController::getAllCampsJSON
+    methods: ['GET']
+app_camp_getById:
+    path: api/camp/{id}
+    controller: App\Controller\CampController::getCampByIdJSON
+    methods: ['GET']
+app_camp_deleteCampByI:
+    path: api/camp/delete/{id}
+    controller: App\Controller\CampController::deleteCampByIdJSON
+    methods: ['DELETE']
