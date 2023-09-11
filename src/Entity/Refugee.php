@@ -32,6 +32,9 @@ class Refugee
     #[ORM\Column(nullable: true)]
     private ?int $tentNum = null;
 
+    #[ORM\ManyToOne(inversedBy: 'refugees')]
+    private ?Camp $CampID = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +108,18 @@ class Refugee
     public function setTentNum(?int $tentNum): static
     {
         $this->tentNum = $tentNum;
+
+        return $this;
+    }
+
+    public function getCampID(): ?Camp
+    {
+        return $this->CampID;
+    }
+
+    public function setCampID(?Camp $CampID): static
+    {
+        $this->CampID = $CampID;
 
         return $this;
     }

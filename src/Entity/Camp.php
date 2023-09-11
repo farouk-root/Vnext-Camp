@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CampRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CampRepository::class)]
@@ -24,6 +26,14 @@ class Camp
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $Description = null;
+
+    #[ORM\OneToMany(mappedBy: 'CampID', targetEntity: Refugee::class)]
+    private Collection $refugees;
+
+    public function __construct()
+    {
+        $this->refugees = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -74,6 +84,36 @@ class Camp
     public function setDescription(?string $Description): static
     {
         $this->Description = $Description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Refugee>
+     */
+    public function getRefugees(): Collection
+    {
+        return $this->refugees;
+    }
+
+    public function addRefugee(Refugee $refugee): static
+    {
+        if (!$this->refugees->contains($refugee)) {
+            $this->refugees->add($refugee);
+            $refugee->setCampID($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRefugee(Refugee $refugee): static
+    {
+        if ($this->refugees->removeElement($refugee)) {
+            // set the owning side to null (unless already changed)
+            if ($refugee->getCampID() === $this) {
+                $refugee->setCampID(null);
+            }
+        }
 
         return $this;
     }
