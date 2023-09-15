@@ -24,9 +24,13 @@ class Service
     #[ORM\OneToMany(mappedBy: 'serviceType', targetEntity: Teams::class)]
     private Collection $teams;
 
+    #[ORM\OneToMany(mappedBy: 'services', targetEntity: Ressource::class)]
+    private Collection $ressources;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
+        $this->ressources = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,6 +86,36 @@ class Service
             // set the owning side to null (unless already changed)
             if ($team->getServiceType() === $this) {
                 $team->setServiceType(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ressource>
+     */
+    public function getRessources(): Collection
+    {
+        return $this->ressources;
+    }
+
+    public function addRessource(Ressource $ressource): static
+    {
+        if (!$this->ressources->contains($ressource)) {
+            $this->ressources->add($ressource);
+            $ressource->setServices($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRessource(Ressource $ressource): static
+    {
+        if ($this->ressources->removeElement($ressource)) {
+            // set the owning side to null (unless already changed)
+            if ($ressource->getServices() === $this) {
+                $ressource->setServices(null);
             }
         }
 
