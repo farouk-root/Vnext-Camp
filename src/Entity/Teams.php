@@ -19,6 +19,9 @@ class Teams
     #[ORM\ManyToOne]
     private ?Travailler $travaillerID = null;
 
+    #[ORM\ManyToOne(inversedBy: 'teams')]
+    private ?Service $serviceType = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class Teams
     public function setTravaillerID(?Travailler $travaillerID): static
     {
         $this->travaillerID = $travaillerID;
+
+        return $this;
+    }
+
+    public function getServiceType(): ?Service
+    {
+        return $this->serviceType;
+    }
+
+    public function setServiceType(?Service $serviceType): static
+    {
+        $this->serviceType = $serviceType;
 
         return $this;
     }
