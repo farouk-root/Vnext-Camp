@@ -19,6 +19,9 @@ class Donation
     #[ORM\Column(nullable: true)]
     private ?int $Amount = null;
 
+    #[ORM\ManyToOne(inversedBy: 'donations')]
+    private ?Ressource $Ressources = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class Donation
     public function setAmount(?int $Amount): static
     {
         $this->Amount = $Amount;
+
+        return $this;
+    }
+
+    public function getRessources(): ?Ressource
+    {
+        return $this->Ressources;
+    }
+
+    public function setRessources(?Ressource $Ressources): static
+    {
+        $this->Ressources = $Ressources;
 
         return $this;
     }
