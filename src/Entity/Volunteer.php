@@ -29,6 +29,9 @@ class Volunteer
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $occupation = null;
 
+    #[ORM\ManyToOne(inversedBy: 'volunteers')]
+    private ?Association $Associations = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +93,18 @@ class Volunteer
     public function setOccupation(?string $occupation): static
     {
         $this->occupation = $occupation;
+
+        return $this;
+    }
+
+    public function getAssociations(): ?Association
+    {
+        return $this->Associations;
+    }
+
+    public function setAssociations(?Association $Associations): static
+    {
+        $this->Associations = $Associations;
 
         return $this;
     }
