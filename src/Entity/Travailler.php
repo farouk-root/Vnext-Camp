@@ -25,6 +25,9 @@ class Travailler
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $role = null;
 
+    #[ORM\ManyToOne(inversedBy: 'travaillers')]
+    private ?Camp $CampID = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +77,18 @@ class Travailler
     public function setRole(?string $role): static
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    public function getCampID(): ?Camp
+    {
+        return $this->CampID;
+    }
+
+    public function setCampID(?Camp $CampID): static
+    {
+        $this->CampID = $CampID;
 
         return $this;
     }

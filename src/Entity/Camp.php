@@ -30,9 +30,13 @@ class Camp
     #[ORM\OneToMany(mappedBy: 'CampID', targetEntity: Refugee::class)]
     private Collection $refugees;
 
+    #[ORM\OneToMany(mappedBy: 'CampID', targetEntity: Travailler::class)]
+    private Collection $travaillers;
+
     public function __construct()
     {
         $this->refugees = new ArrayCollection();
+        $this->travaillers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -112,6 +116,36 @@ class Camp
             // set the owning side to null (unless already changed)
             if ($refugee->getCampID() === $this) {
                 $refugee->setCampID(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Travailler>
+     */
+    public function getTravaillers(): Collection
+    {
+        return $this->travaillers;
+    }
+
+    public function addTravailler(Travailler $travailler): static
+    {
+        if (!$this->travaillers->contains($travailler)) {
+            $this->travaillers->add($travailler);
+            $travailler->setCampID($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTravailler(Travailler $travailler): static
+    {
+        if ($this->travaillers->removeElement($travailler)) {
+            // set the owning side to null (unless already changed)
+            if ($travailler->getCampID() === $this) {
+                $travailler->setCampID(null);
             }
         }
 
